@@ -1,11 +1,35 @@
-// Scoreboard
-var Score = function (){
-    ctx.clearRect(1, 610, 500, 300);
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "left";
-    ctx.fillText("Score: "+ player.score, 1, 610);
+// This loads the Google font VT323 for use within Canvas
+WebFontConfig = {
+    google:{ families: ['VT323'] },
+    active: function(){start();},
 };
+(function(){
+    var wf = document.createElement("script");
+    wf.src = 'https://fonts.googleapis.com/css?family=VT323';
+    wf.async = 'true';
+    document.head.appendChild(wf);
+})();
+
+
+// Draw the scores
+var Score = function(){
+    ctx.clearRect(1, 590, 200, 50);
+    ctx.font = "2.25em VT323";
+    ctx.fillStyle = "yellow";
+    ctx.textAlign = "left";
+    ctx.fillText("Score: "+ player.score, 1, 620);
+};
+
+
+// Draw the lives left
+var Lives = function() {
+    ctx.clearRect(310, 590, 200, 50);
+    ctx.font = "2.25em VT323";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "left";
+    ctx.fillText("Lives left: "+ player.lives, 310, 620);
+}
+
 
 // Enemies our player must avoid
 var Enemy = function(x, y) {
@@ -15,8 +39,9 @@ var Enemy = function(x, y) {
     this.y = y;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';           // loads the Enemy image
-    this.speed = Math.floor(Math.random() * 175);   // assigns a random speed of movement to the Enemy
+    this.sprite = 'images/enemy-bug.png';
+    // assigns a random speed of movement to the Enemy
+    this.speed = Math.floor(Math.random() * 250);
 };
 
 // Update the enemy's position, required method for game
@@ -28,13 +53,14 @@ Enemy.prototype.update = function(dt) {
     this.x += this.speed * dt;  // this ensures the game runs at the same speed across different computers
     if (this.x > 505) {         // if the enemy reaches the end of the screen area,
         this.x = 0;             // this resets its position to the start point on the x-axis
-    };                          // this gives the illusion that the enemies are appearing continuously
+    };
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);  // Draws the enemy sprites
 };
+
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -45,6 +71,7 @@ var Player = function(x, y) {
     this.y = y;                             // sets the y-axis position of the player
     this.sprite = 'images/char-boy.png';    // assigs the image file, remember to note the pixel dimensions
     this.score = 0;                         // sets the starting score to 0
+    this.lives = 3;                         // gives the player 3 lives
 };
 
 
@@ -56,7 +83,14 @@ Player.prototype.update = function(dt) {
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);  // Draws the player sprite
-    Score();                                                    // Draws the scoreboard
+    // Draws the header text, scores and lives
+    ctx.clearRect(1, 1, 505, 35);
+    ctx.font = "3em VT323";
+    ctx.fillStyle = "orange";
+    ctx.textAlign = "left";
+    ctx.fillText("Classic Arcade Game Clone", 1, 35);
+    Score();
+    Lives();
 };
 
 
@@ -85,9 +119,9 @@ Player.prototype.handleInput = function(direction) {
 // Here the Math.floor(Math.randon() * 505) assigns a random starting position for the enemies on the X axis.
 // The Y values create the enemies on the correct Y axis values in line with the three rows in the graphics.
 var allEnemies = [
-  new Enemy((Math.floor(Math.random() * 505)), 60),
-  new Enemy((Math.floor(Math.random() * 505)), 145),
-  new Enemy((Math.floor(Math.random() * 505)), 230)
+    new Enemy((Math.floor(Math.random() * 505)), 60),
+    new Enemy((Math.floor(Math.random() * 505)), 145),
+    new Enemy((Math.floor(Math.random() * 505)), 230)
 ];
 
 var player = new Player(200, 405);
@@ -116,30 +150,34 @@ var checkCollisions = function () {
             player.y < allEnemies[i].y + 65 &&  // number value is the height of the enemy image in pixels
             67 + player.y > allEnemies[i].y) {  // number value is the height of the enemy image in pixels
         // collision detected!
-            console.log("Oops!"); // Generates a message to the Console for testing/feedback purposes.
-            player.gameReset();   // Reset the game if a collision is detected.
+            player.gameLose();   // Reset the game if a collision is detected.
         };
     };
 };
 
-Player.prototype.gameReset = function() {
+Player.prototype.gameLose = function() {
     this.x = 200;
-    this.y = 406; // return player to starting position
-    // (optional) do something with the enemies as well
-    // return them to their starting positions, change speeds etc
-    player.score -= 100;
+    this.y = 406;
+    player.lives -= 1;
     Score();
-    alert("Damm! You got eaten by a BUG!");
+    if (player.lives === 0) {
+        alert("You've run outta lives mate. You DEAD!");
+    }
 };
 
 Player.prototype.gameWon = function() {
     this.x = 200;
-    this.y = 406; // return player to starting position
-    // (optional) do something with the enemies as well
-    // return them to their starting positions, change speeds etc
+    this.y = 406;
     player.score += 100;
     Score();
-    alert("You WON!")
+};
+
+Player.prototype.gameReset = function() {
+    this.x = 200;
+    this.y = 406;
+    player.score = 0;
+    player.lives = 9;
+    Score();
 };
 
 
