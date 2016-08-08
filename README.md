@@ -14,16 +14,17 @@ You can make customizations in the game by editing the app.js file. This is the 
 
 ###1. Increasing the speed of the bugs###
 
-`
-var Enemy = function(x, y) {
+In the app.js file, you can increase the speed of the bus by changing the * 250 value in the Enemy function to whatever you like.
+
+`var Enemy = function(x, y) {
     this.x = x;
     this.y = y;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     // assigns a random speed of movement to the Enemy
-    this.speed = Math.floor(Math.random() * 250);
-};
-`
-You can make the bugs faster or slower by changing the * 250 value in the Enemy function to whatever you like.
+    this.speed = Math.floor(Math.random() * 250); // Change this value
+};`
+
+
 
