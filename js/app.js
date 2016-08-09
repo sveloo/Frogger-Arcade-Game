@@ -7,6 +7,7 @@ WebFontConfig = {
         start();
     },
 };
+
 (function() {
     var wf = document.createElement("script");
     wf.src = 'https://fonts.googleapis.com/css?family=VT323';
@@ -15,26 +16,8 @@ WebFontConfig = {
 })();
 
 
-// Draw the scores
-// var Score = function() {
-//     ctx.clearRect(1, 590, 200, 50);
-//     ctx.font = "2.25em VT323";
-//     ctx.fillStyle = "yellow";
-//     ctx.textAlign = "left";
-//     ctx.fillText("Score: " + player.score, 1, 620);
-// };
+// Enemies (the bugs)
 
-
-// Draw the lives left
-// var Lives = function() {
-//     ctx.clearRect(310, 590, 200, 50);
-//     ctx.font = "2.25em VT323";
-//     ctx.fillStyle = "red";
-//     ctx.textAlign = "left";
-//     ctx.fillText("Lives left: " + player.lives, 310, 620);
-// }
-
-// Enemies our player must avoid
 var Enemy = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -46,6 +29,7 @@ var Enemy = function(x, y) {
     // assigns a random speed of movement to the Enemy
     this.speed = Math.floor(Math.random() * 250);
 };
+
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -59,10 +43,12 @@ Enemy.prototype.update = function(dt) {
     };
 };
 
+
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y); // Draws the enemy sprites
 };
+
 
 
 // Now write your own player class
@@ -70,8 +56,9 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 
 var Player = function(x, y) {
-    this.x = x; // sets the x-axis position of the player
-    this.y = y; // sets the y-axis position of the player
+    // Sets the position variables
+    this.x = x;
+    this.y = y;
     this.sprite = 'images/char-boy.png'; // assigs the image file, remember to note the pixel dimensions
     this.score = 0; // sets the starting score to 0
     this.lives = 3; // gives the player 3 lives
@@ -79,10 +66,13 @@ var Player = function(x, y) {
 
 
 Player.prototype.update = function(dt) {
-    if (this.y <= -9) { // if the player reaches the end game y-axis point (-9), execute
-        this.gameWon(); // game won function
+    // if the player reaches the end game y-axis point (-9), execute
+    // game won function
+    if (this.y <= -9) {
+        this.gameWon();
     };
 };
+
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y); // Draws the player sprite
@@ -92,36 +82,38 @@ Player.prototype.render = function() {
     ctx.fillStyle = "orange";
     ctx.textAlign = "left";
     ctx.fillText("Classic Arcade Game Clone", 1, 35);
-    this.Score();
-    this.Lives();
+    this.scoreBoard();
+    this.livesLeft();
 };
 
-Player.prototype.Score = function() {
+
+Player.prototype.scoreBoard = function() {
     ctx.clearRect(1, 590, 200, 50);
     ctx.font = "2.25em VT323";
     ctx.fillStyle = "yellow";
     ctx.textAlign = "left";
-    ctx.fillText("Score: " + this.score, 1, 620); //You're biding the `Player` object in a different context.
+    ctx.fillText("Score: " + this.score, 1, 620);
 };
 
-Player.prototype.Lives = function() {
+
+Player.prototype.livesLeft = function() {
     ctx.clearRect(310, 590, 200, 50);
     ctx.font = "2.25em VT323";
     ctx.fillStyle = "red";
     ctx.textAlign = "left";
-    ctx.fillText("Lives left: " + player.lives, 310, 620);
-}
+    ctx.fillText("Lives left: " + this.lives, 310, 620);
+};
 
 
-// Here we define the distance moved with each keypress diretion
-// We also check to see if the position is within the boundaries of the games x and y values
-// Note that the boundary values will change if you use a different image dimension
 Player.prototype.handleInput = function(direction) {
+    // Here we define the distance moved with each keypress diretion
+    // We also check to see if the position is within the boundaries of the games x and y values
+    // Note that the boundary values will change if you use a different image dimension
     if (direction === 'left' && this.x > 0) {
-        this.x -= 100;
+        this.x -= 101;
     }
     if (direction === 'right' && this.x < 400) {
-        this.x += 100;
+        this.x += 101;
     }
     if (direction === 'up' && this.y > -9) {
         this.y -= 83;
@@ -153,7 +145,6 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
@@ -178,7 +169,7 @@ Player.prototype.gameLose = function() {
     this.x = 200;
     this.y = 406;
     this.lives -= 1;
-    this.Score();
+    this.scoreBoard();
     if (this.lives === 0) {
         alert("You've run outta lives mate. You DEAD!");
     }
@@ -188,7 +179,7 @@ Player.prototype.gameWon = function() {
     this.x = 200;
     this.y = 406;
     this.score += 100;
-    this.Score();
+    this.scoreBoard();
 };
 
 Player.prototype.gameReset = function() {
@@ -196,5 +187,5 @@ Player.prototype.gameReset = function() {
     this.y = 406;
     this.score = 0;
     this.lives = 9;
-    this.Score();
+    this.scoreBoard();
 };
