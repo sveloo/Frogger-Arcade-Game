@@ -16,24 +16,23 @@ WebFontConfig = {
 
 
 // Draw the scores
-var Score = function() {
-    ctx.clearRect(1, 590, 200, 50);
-    ctx.font = "2.25em VT323";
-    ctx.fillStyle = "yellow";
-    ctx.textAlign = "left";
-    ctx.fillText("Score: " + player.score, 1, 620);
-};
+// var Score = function() {
+//     ctx.clearRect(1, 590, 200, 50);
+//     ctx.font = "2.25em VT323";
+//     ctx.fillStyle = "yellow";
+//     ctx.textAlign = "left";
+//     ctx.fillText("Score: " + player.score, 1, 620);
+// };
 
 
 // Draw the lives left
-var Lives = function() {
-    ctx.clearRect(310, 590, 200, 50);
-    ctx.font = "2.25em VT323";
-    ctx.fillStyle = "red";
-    ctx.textAlign = "left";
-    ctx.fillText("Lives left: " + player.lives, 310, 620);
-}
-
+// var Lives = function() {
+//     ctx.clearRect(310, 590, 200, 50);
+//     ctx.font = "2.25em VT323";
+//     ctx.fillStyle = "red";
+//     ctx.textAlign = "left";
+//     ctx.fillText("Lives left: " + player.lives, 310, 620);
+// }
 
 // Enemies our player must avoid
 var Enemy = function(x, y) {
@@ -81,7 +80,7 @@ var Player = function(x, y) {
 
 Player.prototype.update = function(dt) {
     if (this.y <= -9) { // if the player reaches the end game y-axis point (-9), execute
-        player.gameWon(); // game won function
+        this.gameWon(); // game won function
     };
 };
 
@@ -93,9 +92,25 @@ Player.prototype.render = function() {
     ctx.fillStyle = "orange";
     ctx.textAlign = "left";
     ctx.fillText("Classic Arcade Game Clone", 1, 35);
-    Score();
-    Lives();
+    this.Score();
+    this.Lives();
 };
+
+Player.prototype.Score = function() {
+    ctx.clearRect(1, 590, 200, 50);
+    ctx.font = "2.25em VT323";
+    ctx.fillStyle = "yellow";
+    ctx.textAlign = "left";
+    ctx.fillText("Score: " + this.score, 1, 620); //You're biding the `Player` object in a different context.
+};
+
+Player.prototype.Lives = function() {
+    ctx.clearRect(310, 590, 200, 50);
+    ctx.font = "2.25em VT323";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "left";
+    ctx.fillText("Lives left: " + player.lives, 310, 620);
+}
 
 
 // Here we define the distance moved with each keypress diretion
@@ -162,9 +177,9 @@ var checkCollisions = function() {
 Player.prototype.gameLose = function() {
     this.x = 200;
     this.y = 406;
-    player.lives -= 1;
-    Score();
-    if (player.lives === 0) {
+    this.lives -= 1;
+    this.Score();
+    if (this.lives === 0) {
         alert("You've run outta lives mate. You DEAD!");
     }
 };
@@ -172,14 +187,14 @@ Player.prototype.gameLose = function() {
 Player.prototype.gameWon = function() {
     this.x = 200;
     this.y = 406;
-    player.score += 100;
-    Score();
+    this.score += 100;
+    this.Score();
 };
 
 Player.prototype.gameReset = function() {
     this.x = 200;
     this.y = 406;
-    player.score = 0;
-    player.lives = 9;
-    Score();
+    this.score = 0;
+    this.lives = 9;
+    this.Score();
 };
