@@ -15,21 +15,28 @@ WebFontConfig = {
     document.head.appendChild(wf);
 })();
 
+// Basic character class
 
-// Enemies (the bugs)
-
-var Enemy = function(x, y) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+var Char = function(x, y){
     this.x = x;
     this.y = y;
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+}
+
+Char.prototype.render = function() {
+   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+// Enemy class
+
+var Enemy = function(x, y){
+    Char.call(this, x, y); // add the keyword 'this' and optionally more arguments and objects here
+    // add more properties here
     this.sprite = 'images/enemy-bug.png';
-    // assigns a random speed of movement to the Enemy
     this.speed = Math.floor(Math.random() * 250);
 };
 
+Enemy.prototype = Object.create(Char.prototype);
+Enemy.prototype.constructor = Enemy;
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -43,7 +50,6 @@ Enemy.prototype.update = function(dt) {
     };
 };
 
-
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y); // Draws the enemy sprites
@@ -51,19 +57,22 @@ Enemy.prototype.render = function() {
 
 
 
+
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 
-var Player = function(x, y) {
-    // Sets the position variables
-    this.x = x;
-    this.y = y;
+var Player = function(x, y){
+    Char.call(this, x, y); // add the keyword 'this' and optionally more arguments and objects here
+    // add more properties here
     this.sprite = 'images/char-boy.png'; // assigs the image file, remember to note the pixel dimensions
     this.score = 0; // sets the starting score to 0
     this.lives = 3; // gives the player 3 lives
 };
 
+Player.prototype = Object.create(Char.prototype);
+Player.prototype.constructor = Player;
 
 Player.prototype.update = function(dt) {
     // if the player reaches the end game y-axis point (-9), execute
